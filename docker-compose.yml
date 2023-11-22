@@ -1,0 +1,89 @@
+version: '3.4'
+
+services:
+  chavinci-core:
+    image: chavinci-chain/chavinci-core:0.17
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcpassword=bar
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    ports:
+      - 18443:18443
+    healthcheck:
+      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
+
+  chavinci-core-multi-wallet:
+    image: chavinci-chain/chavinci-core:0.17
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcpassword=bar
+      -wallet
+      -wallet=wallet1
+      -wallet=wallet2
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    ports:
+      - 18453:18443
+    healthcheck:
+      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
+
+  chavinci-core-ssl:
+    image: chavinci-chain/chavinci-core:0.11
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcpassword=bar
+      -rpcport=18443
+      -rpcssl
+      -rpcsslcertificatechainfile=/etc/ssl/chavincid/cert.pem
+      -rpcsslprivatekeyfile=/etc/ssl/chavincid/key.pem
+      -rpcuser=foo
+      -server
+    volumes:
+      - ./test/config/ssl:/etc/ssl/chavincid
+    ports:
+      - 18463:18443
+    healthcheck:
+      test: curl --fail -k "https://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
+
+  chavinci-core-username-only:
+    image: chavinci-chain/chavinci-core:0.11
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    ports:
+      - 18473:18443
+    healthcheck:
+      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
