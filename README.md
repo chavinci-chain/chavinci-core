@@ -20,6 +20,14 @@ Install the package via `npm`:
 npm install chavinci-core --save
 ```
 
+or via `bun`:
+
+Install the package via `bun`:
+
+```sh
+bun install chavinci-core 
+```
+
 ## Usage
 ### Client(...args)
 #### Arguments
